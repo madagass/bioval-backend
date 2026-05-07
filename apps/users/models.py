@@ -22,6 +22,11 @@ class User(models.Model):
     organisation = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # required by DRF permissions
+    @property
+    def is_authenticated(self):
+        return True
+
     class Meta:
         db_table = "users"
         ordering = ["-created_at"]

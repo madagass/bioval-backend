@@ -8,7 +8,7 @@ from .serializers import (
     AccessRequestCreateSerializer,
     AccessRequestStatusSerializer,
 )
-from apps.users.permissions import IsAdminMetier
+from apps.users.permissions import IsAdminMetier, IsAdminGlobalOrMetier
 
 
 class AccessRequestListView(generics.ListAPIView):
@@ -39,7 +39,7 @@ class AccessRequestListCreateView(generics.ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == "POST":
             return [AllowAny()]
-        return [IsAdminMetier()]
+        return [IsAdminGlobalOrMetier()]
 
     def get_authenticators(self):
         if self.request.method == "POST":
@@ -49,8 +49,8 @@ class AccessRequestListCreateView(generics.ListCreateAPIView):
 
 class AccessRequestDetailView(generics.RetrieveUpdateAPIView):
     queryset = AccessRequest.objects.all()
-    permission_classes = [IsAdminMetier]
-
+    permission_classes = [IsAdminGlobalOrMetier]
+    
     def get_serializer_class(self):
         if self.request.method in ["PATCH", "PUT"]:
             return AccessRequestStatusSerializer
