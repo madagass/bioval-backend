@@ -1,11 +1,10 @@
+import json
 import jwt
 import requests as http_requests
-from jwt.algorithms import RSAAlgorithm
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User
-import json
 
 
 def get_clerk_public_keys():
@@ -24,7 +23,8 @@ def verify_clerk_token(token):
         if not matching_key:
             raise AuthenticationFailed("No matching key found")
 
-        public_key = RSAAlgorithm.from_jwk(json.dumps(matching_key))
+        public_key = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(matching_key))
+
         payload = jwt.decode(
             token,
             public_key,
